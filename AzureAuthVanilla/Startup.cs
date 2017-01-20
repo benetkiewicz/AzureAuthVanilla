@@ -2,6 +2,7 @@
 
 namespace AzureAuthVanilla
 {
+    using System.IdentityModel.Tokens;
     using System.Web.Configuration;
     using Microsoft.Owin.Security;
     using Microsoft.Owin.Security.Cookies;
@@ -18,12 +19,25 @@ namespace AzureAuthVanilla
         private void ConfigureAuth(IAppBuilder app)
         {
             app.UseCookieAuthentication(new CookieAuthenticationOptions());
-            string authorityUrl = string.Format("https://login.microsoftonline.com/{0}", WebConfigurationManager.AppSettings["ida:Tenant"]);
+
+            string policy = "B2C_1_Blog_SignIn_SignUp";
             app.UseOpenIdConnectAuthentication(
                 new OpenIdConnectAuthenticationOptions
                 {
                     ClientId = WebConfigurationManager.AppSettings["ida:ClientId"],
-                    Authority = authorityUrl
+                    MetadataAddress = string.Format(
+                        "https://login.microsoftonline.com/{0}/v2.0/.well-known/openid-configuration?p={1}", 
+                        WebConfigurationManager.AppSettings["ida:Tenant"], 
+                        policy),
+                    AuthenticationType = policy,
+                    RedirectUri = "http://localhost:44404/",
+                    Scope = "openid",
+                    ResponseType = "id_token",
+                    TokenValidationParameters = new TokenValidationParameters
+                    {
+                        NameClaimType = "name",
+                        SaveSigninToken = true //important to save the token in boostrapcontext
+                    }
                 });
 
             app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
