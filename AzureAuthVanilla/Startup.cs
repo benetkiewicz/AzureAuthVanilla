@@ -29,14 +29,12 @@ namespace AzureAuthVanilla
                         "https://login.microsoftonline.com/{0}/v2.0/.well-known/openid-configuration?p={1}", 
                         WebConfigurationManager.AppSettings["ida:Tenant"], 
                         policy),
-                    AuthenticationType = policy,
                     RedirectUri = "http://localhost:44404/",
-                    Scope = "openid",
-                    ResponseType = "id_token",
+                    //Scope = "openid",
+                    //ResponseType = "id_token",
                     TokenValidationParameters = new TokenValidationParameters
                     {
                         NameClaimType = "name",
-                        SaveSigninToken = true //important to save the token in boostrapcontext
                     }
                 });
 
