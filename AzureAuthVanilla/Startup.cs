@@ -2,7 +2,9 @@
 
 namespace AzureAuthVanilla
 {
+    using System.Collections.Generic;
     using System.IdentityModel.Tokens;
+    using System.Threading.Tasks;
     using System.Web.Configuration;
     using Microsoft.Owin.Security;
     using Microsoft.Owin.Security.Cookies;
@@ -18,7 +20,22 @@ namespace AzureAuthVanilla
 
         private void ConfigureAuth(IAppBuilder app)
         {
-            app.UseCookieAuthentication(new CookieAuthenticationOptions());
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                Provider = new CookieAuthenticationProvider
+                {
+                    OnResponseSignIn = ctx =>
+                    {
+                        string clientId = WebConfigurationManager.AppSettings["ida:B2CClientId"];
+                        string secret = WebConfigurationManager.AppSettings["ida:B2CAppKey"];
+                        string tenant = WebConfigurationManager.AppSettings["ida:B2CTenant"];
+                        var graphClient = new GraphClient(clientId, secret, tenant);
+
+                        string userObjectId = ctx.Identity.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
+                        List<string> result = graphClient.MemberOf(userObjectId).Result;
+                    }
+                }
+            });
 
             string policy = "B2C_1_Blog_SignIn_SignUp";
             app.UseOpenIdConnectAuthentication(
@@ -30,8 +47,8 @@ namespace AzureAuthVanilla
                         WebConfigurationManager.AppSettings["ida:Tenant"], 
                         policy),
                     RedirectUri = "http://localhost:44404/",
-                    //Scope = "openid",
-                    //ResponseType = "id_token",
+                    Scope = "openid",
+                    ResponseType = "id_token",
                     TokenValidationParameters = new TokenValidationParameters
                     {
                         NameClaimType = "name",
