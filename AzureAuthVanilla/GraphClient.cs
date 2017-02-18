@@ -28,7 +28,7 @@
 
         public async Task<List<string>> MemberOf(string objectId)
         {
-            string jsonResponse = await SendGraphPostRequest("/users/" + objectId + "/getMemberGroups", "{securityEnabledOnly: false}");
+            string jsonResponse = await SendGraphPostRequest("/users/" + objectId + "/getMemberGroups", "{securityEnabledOnly: false}").ConfigureAwait(false);
             var deserializedResponse = JsonConvert.DeserializeObject<GetMemberGroupsResponse>(jsonResponse);
             return deserializedResponse.Value;
         }
@@ -51,7 +51,7 @@
                 throw new WebException("Error Calling the Graph API: \n" + JsonConvert.SerializeObject(formatted, Formatting.Indented));
             }
 
-            return await response.Content.ReadAsStringAsync();
+            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
     }
 }

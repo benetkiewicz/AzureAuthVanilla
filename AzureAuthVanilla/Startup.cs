@@ -4,8 +4,8 @@ namespace AzureAuthVanilla
 {
     using System.Collections.Generic;
     using System.IdentityModel.Tokens;
-    using System.Threading.Tasks;
     using System.Web.Configuration;
+    using Microsoft.IdentityModel.Clients.ActiveDirectory;
     using Microsoft.Owin.Security;
     using Microsoft.Owin.Security.Cookies;
     using Microsoft.Owin.Security.OpenIdConnect;
@@ -26,9 +26,9 @@ namespace AzureAuthVanilla
                 {
                     OnResponseSignIn = ctx =>
                     {
-                        string clientId = WebConfigurationManager.AppSettings["ida:B2CClientId"];
-                        string secret = WebConfigurationManager.AppSettings["ida:B2CAppKey"];
-                        string tenant = WebConfigurationManager.AppSettings["ida:B2CTenant"];
+                        string clientId = WebConfigurationManager.AppSettings["b2c:ClientId"];
+                        string secret = WebConfigurationManager.AppSettings["b2c:ClientSecret"];
+                        string tenant = WebConfigurationManager.AppSettings["b2c:Tenant"];
                         var graphClient = new GraphClient(clientId, secret, tenant);
 
                         string userObjectId = ctx.Identity.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
