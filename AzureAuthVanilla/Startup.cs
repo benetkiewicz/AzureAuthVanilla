@@ -20,22 +20,7 @@ namespace AzureAuthVanilla
 
         private void ConfigureAuth(IAppBuilder app)
         {
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                Provider = new CookieAuthenticationProvider
-                {
-                    OnResponseSignIn = ctx =>
-                    {
-                        string clientId = WebConfigurationManager.AppSettings["b2c:ClientId"];
-                        string secret = WebConfigurationManager.AppSettings["b2c:ClientSecret"];
-                        string tenant = WebConfigurationManager.AppSettings["b2c:Tenant"];
-                        var graphClient = new GraphClient(clientId, secret, tenant);
-
-                        string userObjectId = ctx.Identity.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
-                        List<string> result = graphClient.MemberOf(userObjectId).Result;
-                    }
-                }
-            });
+            app.UseCookieAuthentication(new CookieAuthenticationOptions());
 
             string policy = "B2C_1_Blog_SignIn_SignUp";
             app.UseOpenIdConnectAuthentication(

@@ -144,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ClaimModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="GetMemberGroupsResponse.cs" />
     <Compile Include="Global.asax.cs">
