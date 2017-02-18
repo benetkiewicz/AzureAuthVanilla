@@ -2,10 +2,8 @@
 
 namespace AzureAuthVanilla
 {
-    using System.Collections.Generic;
     using System.IdentityModel.Tokens;
     using System.Web.Configuration;
-    using Microsoft.IdentityModel.Clients.ActiveDirectory;
     using Microsoft.Owin.Security;
     using Microsoft.Owin.Security.Cookies;
     using Microsoft.Owin.Security.OpenIdConnect;
@@ -32,8 +30,8 @@ namespace AzureAuthVanilla
                         WebConfigurationManager.AppSettings["ida:Tenant"], 
                         policy),
                     RedirectUri = "http://localhost:44404/",
-                    Scope = "openid",
-                    ResponseType = "id_token",
+                    //Scope = "openid",
+                    //ResponseType = "id_token",
                     TokenValidationParameters = new TokenValidationParameters
                     {
                         NameClaimType = "name",
